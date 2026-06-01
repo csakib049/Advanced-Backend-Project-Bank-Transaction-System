@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx nodemon server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/csakib049/-Advanced-Backend-Project-Bank-Transaction-System-with-Node.js-Express-MongoDB-#readme",
   "dependencies": {
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.6.3"
   }
 }
