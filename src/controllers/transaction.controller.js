@@ -120,12 +120,18 @@ async function createTransaction(req, res) {
     }
 
 
+    let transaction;
+
+    try{
+
+    
+
     //5. Create transaction (PENDING)
 
     const session = await mongoose.startSession()
     session.startTransaction()
 
-    const transaction = await transactionModel.create({
+     transaction = await transactionModel.create({
         fromAccount,
         toAccount,
         amount,
@@ -152,6 +158,12 @@ async function createTransaction(req, res) {
     }, { session })
 
 
+    await transactionModel.findOneAndUpdate(
+        { _id: transaction._id },
+        { status: "COMPLETED" },
+        { session }
+    )
+
 
     transaction.status = "COMPLETED"
     await transaction.save({ session })
@@ -161,7 +173,13 @@ async function createTransaction(req, res) {
     await session.commitTransaction()
     session.endSession()
 
+}catch(error){
+    return res.status(400).json({
+        message:"Transaction is Pending due to some issue , please try after some time.",
 
+    })
+
+}
 
     //10. Send email notification
 
@@ -216,13 +234,13 @@ async function createInitialFundsTransaction(req, res) {
     session.startTransaction()
 
 
-    const transaction = new transactionModel.create({
+    const transaction = (await transactionModel.create([{
         fromAccount: fromUserAccount._id,
         toAccount,
         amount,
         idempotencyKey,
         status: "PENDING"
-    })
+    }], { session }))[0]
 
 
     const debitLedgerEntry = await ledgerModel.create([{
@@ -231,6 +249,14 @@ async function createInitialFundsTransaction(req, res) {
         transaction: transaction._id,
         type: "DEBIT"
     }], { session })
+
+
+    await (() => {
+        return new Promise((resolve) =>
+            setTimeout(resolve, 100 * 1000)
+        );
+    })();
+
 
 
     const creditLedgerEntry = await ledgerModel.create([{
