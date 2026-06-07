@@ -4,7 +4,7 @@ const tokenBlackListSchema = new mongoose.Schema({
     token: {
         type: String,
         require: [true, "Token is requried to blacklist."],
-        unique: [true, "Token is alrady blacklisted"]
+        unique: [true, "Token is alrady blacklisted."]
     },
     blacklistAt: {
         type: Date,

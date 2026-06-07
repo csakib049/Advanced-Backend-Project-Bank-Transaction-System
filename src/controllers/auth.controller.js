@@ -20,6 +20,7 @@ async function userRegisterController(req, res) {
         });
     }
 
+    //create account
     const user = await userModel.create({
         email,
         password,
@@ -102,6 +103,8 @@ async function userLoginController(req, res) {
  */
 
 async function userLogoutController(req, res) {
+
+    //getting token from cookies or from header
     const token = req.cookies.token || req.header.authrization?.split(" ")[1]
 
     if (!token) {
@@ -112,12 +115,14 @@ async function userLogoutController(req, res) {
 
 
     res.cookie("token", " ")
+    
     await tokenBlackListModel.create({ 
         token: token
     })
 
 
-    res.clearCookie("token")
+    res.clearCookie("token");
+
 
     res.status(200).json({
         message: "User logout successfully"

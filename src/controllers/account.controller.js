@@ -12,7 +12,6 @@ async function createAccountController(req, res) {
         account
     })
 
-
 }
 
 
@@ -45,6 +44,12 @@ async function getUserAccountBalanceController(req, res) {
     }
 
     const balance = await account.getBalance();
+
+    if(!balance){
+        return res.status(404).json({
+            message:"Balance not found."
+        })
+    }
 
     res.status(200).json({
         accountId: account._id,

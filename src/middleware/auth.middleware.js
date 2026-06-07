@@ -17,6 +17,7 @@ async function authMiddleware(req, res, next) {
 
     const isBlackListed = await tokenBlackListModel.findOne({ token })
 
+
     if (isBlackListed) {
         return res.status(401).json({
             message: "Unauthorized access , toke is invalid. "
@@ -30,11 +31,11 @@ async function authMiddleware(req, res, next) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
 
-        const user = await userModel
-            .findById(decoded.userID);
+        const user = await userModel.findById(decoded.userID);
 
 
         req.user = user;
+        // Attaches the user object to the request so that the next middleware/controller can access it.
 
         next()
 
