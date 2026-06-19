@@ -30,8 +30,18 @@ async function authMiddleware(req, res, next) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+      // console.log("1. Full Decoded Token:", decoded);
+      // console.log("2. Targeted ID property:", decoded.userId);
 
-        const user = await userModel.findById(decoded.userID);
+        const user = await userModel.findById(decoded.userId);
+
+       //console.log("3. Database Result:", user);
+
+        if(!user){
+            return res.status(401).json({
+                message:"Unauthorized access, user no longer exists."
+            });
+        }
 
 
         req.user = user;
