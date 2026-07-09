@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: bank-backend
+
+    ports:
+      - "5000:5000"
+
+    env_file:
+      - .env
+
+    depends_on:
+      - mongodb
+
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:8
+    container_name: bank-mongodb
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongo-data:/data/db
+
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
